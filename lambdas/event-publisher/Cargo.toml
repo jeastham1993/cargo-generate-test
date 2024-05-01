@@ -1,5 +1,5 @@
 [package]
-name = "{{project-name}}-event-publisher"
+name = "{{crate_name}}-event-publisher"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -7,7 +7,7 @@ license.workspace = true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-{{project-name}}_shared = { path = "../shared" }
+{{crate_name}}_shared = { path = "../shared" }
 aws_lambda_events = { version = "0.14.0", default-features = false, features = [
     "dynamodb",
 ] }

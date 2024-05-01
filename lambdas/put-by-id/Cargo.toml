@@ -1,5 +1,5 @@
 [package]
-name = "{{project-name}}-put-by-id"
+name = "{{crate_name}}-put-by-id"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -8,7 +8,7 @@ license.workspace = true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-{{project-name}}_shared = { path = "../shared" }
+{{crate_name}}_shared = { path = "../shared" }
 
 lambda_http = "0.10.0"
 tokio = { version = "1.36.0", features = ["macros"] }
