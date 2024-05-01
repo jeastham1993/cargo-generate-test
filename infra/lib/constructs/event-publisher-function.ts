@@ -23,16 +23,16 @@ export class EventPublisherFunction extends Construct {
             architecture: Architecture.ARM_64,
             environment: {
               TABLE_NAME: props.table.tableName,
-              {{entity_name}}_CREATED_TOPIC: props.orderCreatedTopic.topicArn,
-              {{entity_name}}_UPDATED_TOPIC: props.orderUpdatedTopic.topicArn,
-              {{entity_name}}_DELETED_TOPIC: props.orderDeletedTopic.topicArn,
+              {{entity_name}}_CREATED_TOPIC: props.{{entity_name}}CreatedTopic.topicArn,
+              {{entity_name}}_UPDATED_TOPIC: props.{{entity_name}}UpdatedTopic.topicArn,
+              {{entity_name}}_DELETED_TOPIC: props.{{entity_name}}DeletedTopic.topicArn,
             },
           });
 
         props.table.grantStreamRead(eventPublisherFunction);
-        props.orderCreatedTopic.grantPublish(eventPublisherFunction);
-        props.orderUpdatedTopic.grantPublish(eventPublisherFunction);
-        props.orderDeletedTopic.grantPublish(eventPublisherFunction);
+        props.{{entity_name}}CreatedTopic.grantPublish(eventPublisherFunction);
+        props.{{entity_name}}UpdatedTopic.grantPublish(eventPublisherFunction);
+        props.{{entity_name}}DeletedTopic.grantPublish(eventPublisherFunction);
 
         eventPublisherFunction.addEventSource(new DynamoEventSource(props.table, {
             startingPosition: StartingPosition.LATEST
