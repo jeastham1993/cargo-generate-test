@@ -1,7 +1,7 @@
 use lambda_http::{Error, IntoResponse, Request, RequestPayloadExt, Response, run, service_fn};
 use lambda_http::http::StatusCode;
 
-use {{project-name}}-shared::{ApplicationError, {{entity_name}}Repository, Update{{entity_name}}Command, Update{{entity_name}}CommandHandler};
+use {{project-name}}_shared::{ApplicationError, {{entity_name}}Repository, Update{{entity_name}}Command, Update{{entity_name}}CommandHandler};
 
 #[tokio::main]
 async fn main() -> Result<(), Error>{

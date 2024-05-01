@@ -1,5 +1,5 @@
 use lambda_http::{Error, IntoResponse, Request, service_fn, run, Response, RequestExt};
-use {{project-name}}-shared::{ApplicationError, Get{{entity_name}}Query, Get{{entity_name}}QueryHandler, {{entity_name}}Repository};
+use {{project-name}}_shared::{ApplicationError, Get{{entity_name}}Query, Get{{entity_name}}QueryHandler, {{entity_name}}Repository};
 
 #[tokio::main]
 async fn main() -> Result<(), Error>{
