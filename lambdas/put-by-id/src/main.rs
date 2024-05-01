@@ -1,7 +1,7 @@
 use lambda_http::{Error, IntoResponse, Request, RequestPayloadExt, Response, run, service_fn};
 use lambda_http::http::StatusCode;
 
-use shared::{ApplicationError, OrderRepository, UpdateOrderCommand, UpdateOrderCommandHandler};
+use shared::{ApplicationError, {{entity_name}}Repository, Update{{entity_name}}Command, Update{{entity_name}}CommandHandler};
 
 #[tokio::main]
 async fn main() -> Result<(), Error>{
@@ -13,19 +13,19 @@ async fn main() -> Result<(), Error>{
         .without_time()
         .init();
 
-    let repository = OrderRepository::new(false).await.map_err(|_| {
+    let repository = {{entity_name}}Repository::new(false).await.map_err(|_| {
         ApplicationError::TableNameNotSet()
     })?;
 
-    let command_handler = UpdateOrderCommandHandler::new(repository);
+    let command_handler = Update{{entity_name}}CommandHandler::new(repository);
 
     run(service_fn(|req| {
         handler(&command_handler, req)
     }) ).await
 }
 
-async fn handler(command_handler: &UpdateOrderCommandHandler, event: Request) -> Result<impl IntoResponse, Error> {
-    let item = event.payload::<UpdateOrderCommand>()?;
+async fn handler(command_handler: &Update{{entity_name}}CommandHandler, event: Request) -> Result<impl IntoResponse, Error> {
+    let item = event.payload::<Update{{entity_name}}Command>()?;
 
     let resp = match item {
         Some(i) => {

@@ -17,13 +17,13 @@ async fn function_handler(sns_client: &Client, event: LambdaEvent<Event>) -> Res
     for record in event.payload.records {
         let (stream_data, evt, topic_arn): (StreamData, CloudEvent, String) = match record.event_name.as_str() {
             "INSERT" => {
-                OrderCreatedEvent::parse(record.change.new_image)
+                {{entity_name}}CreatedEvent::parse(record.change.new_image)
             },
             "MODIFY" => {
-                OrderUpdatedEvent::parse(record.change.new_image)
+                {{entity_name}}UpdatedEvent::parse(record.change.new_image)
             },
             "REMOVE" => {
-                OrderDeletedEvent::parse(record.change.old_image)
+                {{entity_name}}DeletedEvent::parse(record.change.old_image)
             },
             _ => {
                 info!("Unknown stream type");
@@ -31,7 +31,7 @@ async fn function_handler(sns_client: &Client, event: LambdaEvent<Event>) -> Res
             }
         };
 
-        if stream_data.data_type != "Order" {
+        if stream_data.data_type != "{{entity_name}}" {
             continue;
         }
 
@@ -51,12 +51,12 @@ async fn function_handler(sns_client: &Client, event: LambdaEvent<Event>) -> Res
 
 #[derive(Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
-struct OrderCreatedEvent {
+struct {{entity_name}}CreatedEvent {
     order_id: String,
     customer_id: String
 }
 
-impl OrderCreatedEvent {
+impl {{entity_name}}CreatedEvent {
     fn parse(record: Item) -> (StreamData, CloudEvent, String) {
         let stream_data: StreamData = record.into();
         let event = CloudEventBuilder::default()
@@ -64,7 +64,7 @@ impl OrderCreatedEvent {
             .event_type("order.created.v1")
             .source("https://orders.api")
             .contenttype("application/json")
-            .data(Data::from_serializable(OrderCreatedEvent {
+            .data(Data::from_serializable({{entity_name}}CreatedEvent {
                 customer_id: stream_data.customer_id.clone(),
                 order_id: stream_data.order_id.clone(),
             }).unwrap())
@@ -76,12 +76,12 @@ impl OrderCreatedEvent {
 
 #[derive(Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
-struct OrderUpdatedEvent {
+struct {{entity_name}}UpdatedEvent {
     order_id: String,
     customer_id: String
 }
 
-impl OrderUpdatedEvent {
+impl {{entity_name}}UpdatedEvent {
     fn parse(record: Item) -> (StreamData, CloudEvent, String) {
         let stream_data: StreamData = record.into();
         let event = CloudEventBuilder::default()
@@ -89,7 +89,7 @@ impl OrderUpdatedEvent {
             .event_type("order.updated.v1")
             .source("https://orders.api")
             .contenttype("application/json")
-            .data(Data::from_serializable(OrderUpdatedEvent {
+            .data(Data::from_serializable({{entity_name}}UpdatedEvent {
                 customer_id: stream_data.customer_id.clone(),
                 order_id: stream_data.order_id.clone(),
             }).unwrap())
@@ -101,12 +101,12 @@ impl OrderUpdatedEvent {
 
 #[derive(Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
-struct OrderDeletedEvent {
+struct {{entity_name}}DeletedEvent {
     order_id: String,
     customer_id: String
 }
 
-impl OrderDeletedEvent {
+impl {{entity_name}}DeletedEvent {
     fn parse(record: Item) -> (StreamData, CloudEvent, String) {
         let stream_data: StreamData = record.into();
         let event = CloudEventBuilder::default()
@@ -114,7 +114,7 @@ impl OrderDeletedEvent {
             .event_type("order.deleted.v1")
             .source("https://orders.api")
             .contenttype("application/json")
-            .data(Data::from_serializable(OrderDeletedEvent {
+            .data(Data::from_serializable({{entity_name}}DeletedEvent {
                 customer_id: stream_data.customer_id.clone(),
                 order_id: stream_data.order_id.clone(),
             }).unwrap())

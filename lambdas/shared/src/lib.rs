@@ -4,11 +4,11 @@ mod update_order_command;
 mod get_order_query;
 mod delete_order_command;
 
-pub use view_models::OrderViewModel;
-pub use create_order_command::{CreateOrderCommand, CreateOrderCommandHandler};
-pub use update_order_command::{UpdateOrderCommand, UpdateOrderCommandHandler};
-pub use get_order_query::{GetOrderQuery, GetOrderQueryHandler};
-pub use delete_order_command::{DeleteOrderCommand, DeleteOrderCommandHandler};
+pub use view_models::{{entity_name}}ViewModel;
+pub use create_order_command::{Create{{entity_name}}Command, Create{{entity_name}}CommandHandler};
+pub use update_order_command::{Update{{entity_name}}Command, Update{{entity_name}}CommandHandler};
+pub use get_order_query::{Get{{entity_name}}Query, Get{{entity_name}}QueryHandler};
+pub use delete_order_command::{Delete{{entity_name}}Command, Delete{{entity_name}}CommandHandler};
 
 use std::env::VarError;
 use std::fmt;
@@ -36,8 +36,8 @@ impl fmt::Display for DatabaseKeys {
 
 #[derive(Error, Debug)]
 pub enum ApplicationError {
-    #[error("Order not found with orderId '{0}'")]
-    OrderNotFound(String),
+    #[error("{{entity_name}} not found with orderId '{0}'")]
+    {{entity_name}}NotFound(String),
     #[error("Error with database: {0}")]
     DatabaseError(String),
     #[error("Table Name not set")]
@@ -50,13 +50,13 @@ impl From<VarError> for ApplicationError {
     }
 }
 
-struct Order {
+struct {{entity_name}} {
     order_id: String,
     customer_id: String,
     other_order_data: String
 }
 
-impl Order{
+impl {{entity_name}}{
     pub fn new (customer_id: String, other_order_data: String) -> Self {
         Self {
             customer_id,
@@ -78,12 +78,12 @@ impl Order{
     }
 }
 
-pub struct OrderRepository {
+pub struct {{entity_name}}Repository {
     client: Client,
     table_name: String
 }
 
-impl OrderRepository {
+impl {{entity_name}}Repository {
     pub async fn new(is_local: bool) -> Result<Self, ApplicationError> {
         let table_name = std::env::var("TABLE_NAME")?;
 
@@ -109,7 +109,7 @@ impl OrderRepository {
         });
     }
 
-    async fn get_by_id(&self, customer_id: String, order_id: String) -> Result<Order, ApplicationError> {
+    async fn get_by_id(&self, customer_id: String, order_id: String) -> Result<{{entity_name}}, ApplicationError> {
         let get_res = &self.client
             .get_item()
             .key(DatabaseKeys::PK.to_string(), AttributeValue::S(customer_id))
@@ -123,9 +123,9 @@ impl OrderRepository {
             })?;
 
         match &get_res.item {
-            None => Err(ApplicationError::OrderNotFound(order_id.clone())),
+            None => Err(ApplicationError::{{entity_name}}NotFound(order_id.clone())),
             Some(item) => {
-                Ok(Order{
+                Ok({{entity_name}}{
                     order_id: item.get(&DatabaseKeys::SK.to_string()).unwrap().as_s().unwrap().clone(),
                     customer_id: item.get(&DatabaseKeys::PK.to_string()).unwrap().as_s().unwrap().clone(),
                     other_order_data: item.get(&DatabaseKeys::Data.to_string()).unwrap().as_s().unwrap().clone(),
@@ -134,7 +134,7 @@ impl OrderRepository {
         }
     }
 
-    async fn add(&self, order: &Order) -> Result<(), ApplicationError> {
+    async fn add(&self, order: &{{entity_name}}) -> Result<(), ApplicationError> {
         let _ = &self.client
             .put_item()
             .item(DatabaseKeys::PK.to_string(), AttributeValue::S(order.customer_id()))
@@ -142,7 +142,7 @@ impl OrderRepository {
             .item(DatabaseKeys::Data.to_string(), AttributeValue::S(order.other_order_data.clone()))
             .item(
                 DatabaseKeys::Type.to_string(),
-                AttributeValue::S("Order".to_string()),
+                AttributeValue::S("{{entity_name}}".to_string()),
             )
             .table_name(&self.table_name)
             .send()
@@ -152,7 +152,7 @@ impl OrderRepository {
         Ok(())
     }
 
-    async fn update(&self, order: &Order) -> Result<(), ApplicationError> {
+    async fn update(&self, order: &{{entity_name}}) -> Result<(), ApplicationError> {
         let _ = &self.client
             .put_item()
             .item(DatabaseKeys::PK.to_string(), AttributeValue::S(order.customer_id()))
@@ -160,7 +160,7 @@ impl OrderRepository {
             .item(DatabaseKeys::Data.to_string(), AttributeValue::S(order.other_order_data.clone()))
             .item(
                 DatabaseKeys::Type.to_string(),
-                AttributeValue::S("Order".to_string()),
+                AttributeValue::S("{{entity_name}}".to_string()),
             )
             .table_name(&self.table_name)
             .send()
@@ -170,7 +170,7 @@ impl OrderRepository {
         Ok(())
     }
 
-    async fn delete(&self, order: &Order) -> Result<(), ApplicationError> {
+    async fn delete(&self, order: &{{entity_name}}) -> Result<(), ApplicationError> {
         let _ = &self.client
             .delete_item()
             .key(DatabaseKeys::PK.to_string(), AttributeValue::S(order.customer_id()))

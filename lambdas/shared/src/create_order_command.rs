@@ -1,28 +1,28 @@
 use serde::Deserialize;
 
-use crate::{ApplicationError, Order, OrderRepository};
-use crate::view_models::OrderViewModel;
+use crate::{ApplicationError, {{entity_name}}, {{entity_name}}Repository};
+use crate::view_models::{{entity_name}}ViewModel;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct CreateOrderCommand {
+pub struct Create{{entity_name}}Command {
     customer_id: String,
     order_data: String,
 }
 
-pub struct CreateOrderCommandHandler {
-    order_repository: OrderRepository
+pub struct Create{{entity_name}}CommandHandler {
+    order_repository: {{entity_name}}Repository
 }
 
-impl CreateOrderCommandHandler {
-    pub fn new(order_repository: OrderRepository) -> Self {
+impl Create{{entity_name}}CommandHandler {
+    pub fn new(order_repository: {{entity_name}}Repository) -> Self {
         Self {
             order_repository
         }
     }
 
-    pub async fn handle(&self, command: CreateOrderCommand) -> Result<OrderViewModel, ApplicationError>{
-        let order = Order::new(command.customer_id, command.order_data);
+    pub async fn handle(&self, command: Create{{entity_name}}Command) -> Result<{{entity_name}}ViewModel, ApplicationError>{
+        let order = {{entity_name}}::new(command.customer_id, command.order_data);
 
         self.order_repository.add(&order).await?;
 

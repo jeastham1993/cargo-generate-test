@@ -1,5 +1,5 @@
 use lambda_http::{Error, IntoResponse, Request, service_fn, run, Response, RequestExt};
-use shared::{ApplicationError, GetOrderQuery, GetOrderQueryHandler, OrderRepository};
+use shared::{ApplicationError, Get{{entity_name}}Query, Get{{entity_name}}QueryHandler, {{entity_name}}Repository};
 
 #[tokio::main]
 async fn main() -> Result<(), Error>{
@@ -11,18 +11,18 @@ async fn main() -> Result<(), Error>{
         .without_time()
         .init();
 
-    let repository = OrderRepository::new(false).await.map_err(|_| {
+    let repository = {{entity_name}}Repository::new(false).await.map_err(|_| {
         ApplicationError::TableNameNotSet()
     })?;
 
-    let query_handler = GetOrderQueryHandler::new(repository);
+    let query_handler = Get{{entity_name}}QueryHandler::new(repository);
 
     run(service_fn(|evt| {
         handler(&query_handler, evt)
     })).await
 }
 
-async fn handler(query_handler: &GetOrderQueryHandler, event: Request) -> Result<impl IntoResponse, Error> {
+async fn handler(query_handler: &Get{{entity_name}}QueryHandler, event: Request) -> Result<impl IntoResponse, Error> {
     let order_id = event
         .path_parameters_ref()
         .and_then(|params| params.first("orderId"))
@@ -32,7 +32,7 @@ async fn handler(query_handler: &GetOrderQueryHandler, event: Request) -> Result
         .and_then(|params| params.first("customerId"))
         .unwrap();
 
-    let res = query_handler.handle(GetOrderQuery{
+    let res = query_handler.handle(Get{{entity_name}}Query{
         order_id: order_id.to_string(),
         customer_id: customer_id.to_string()
     }).await;
@@ -47,7 +47,7 @@ async fn handler(query_handler: &GetOrderQueryHandler, event: Request) -> Result
                 .map_err(Box::new)?
         }
         Err(err_type) => match err_type {
-            ApplicationError::OrderNotFound(_) => Response::builder()
+            ApplicationError::{{entity_name}}NotFound(_) => Response::builder()
                 .status(404)
                 .header("content-type", "application/json")
                 .body("".to_string())
