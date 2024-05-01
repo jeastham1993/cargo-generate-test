@@ -8,7 +8,7 @@ use lambda_runtime::{run, service_fn, Error, LambdaEvent};
 use serde::Serialize;
 use serde_dynamo::{AttributeValue, Item};
 use tracing::info;
-use shared::DatabaseKeys;
+use {{project-name}}-shared::DatabaseKeys;
 use uuid::Uuid;
 
 async fn function_handler(sns_client: &Client, event: LambdaEvent<Event>) -> Result<(), Error> {

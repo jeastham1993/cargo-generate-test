@@ -1,5 +1,5 @@
 use lambda_http::{Error, IntoResponse, Request, service_fn, run, Response, RequestExt};
-use shared::{ApplicationError, Delete{{entity_name}}Command, Delete{{entity_name}}CommandHandler, {{entity_name}}Repository};
+use {{project-name}}-shared::{ApplicationError, Delete{{entity_name}}Command, Delete{{entity_name}}CommandHandler, {{entity_name}}Repository};
 
 #[tokio::main]
 async fn main() -> Result<(), Error>{
