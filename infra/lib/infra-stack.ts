@@ -25,9 +25,9 @@ export class InfraStack extends cdk.Stack {
       stream: StreamViewType.NEW_AND_OLD_IMAGES
     });
 
-    const api = new RestApi(this, "RestApi", {
-      description: "Sample API",
-      restApiName: "Sample API",
+    const api = new RestApi(this, "{{entity_name}}RestApi", {
+      description: "{{entity_name}} API",
+      restApiName: "{{entity_name}} API",
       disableExecuteApiEndpoint: false,
       deployOptions: {
         stageName: `main`,
@@ -38,7 +38,7 @@ export class InfraStack extends cdk.Stack {
       parent: api.root,
       pathPart: "{customerId}",
     });
-    const orderIdResource = new Resource(this, "OrderIdApiResource", {
+    const orderIdResource = new Resource(this, "{{entity_name}}IdApiResource", {
       parent: customerIdResource,
       pathPart: "{orderId}",
     });
@@ -63,28 +63,28 @@ export class InfraStack extends cdk.Stack {
       apiResource: orderIdResource
     });
 
-    const orderCreatedTopic = new Topic(this, "OrderCreatedTopic");
-    const orderUpdatedTopic = new Topic(this, "OrderUpdatedTopic");
-    const orderDeletedTopic = new Topic(this, "OrderDeletedTopic");
+    const {{entity_name}}CreatedTopic = new Topic(this, "{{entity_name}}CreatedTopic");
+    const {{entity_name}}UpdatedTopic = new Topic(this, "{{entity_name}}UpdatedTopic");
+    const {{entity_name}}DeletedTopic = new Topic(this, "{{entity_name}}DeletedTopic");
 
     const eventPublisherFunction = new EventPublisherFunction(this, "EventPublisherFunction", {
       table: table,
-      orderCreatedTopic,
-      orderUpdatedTopic,
-      orderDeletedTopic
+      {{entity_name}}CreatedTopic,
+      {{entity_name}}UpdatedTopic,
+      {{entity_name}}DeletedTopic
     });
 
-    const orderCreatedTopicArnParameter = new StringParameter(this, "OrderCreatedTopicArn", {
-      stringValue: orderCreatedTopic.topicArn,
-      parameterName: "/order-api/order-created"
+    const orderCreatedTopicArnParameter = new StringParameter(this, "{{entity_name}}CreatedTopicArn", {
+      stringValue: {{entity_name}}CreatedTopic.topicArn,
+      parameterName: "/{{entity_name}}-api/order-created"
     });
-    const orderUpdatedTopicArnParameter = new StringParameter(this, "OrderUpdatedTopicArn", {
-      stringValue: orderUpdatedTopic.topicArn,
-      parameterName: "/order-api/order-updated"
+    const orderUpdatedTopicArnParameter = new StringParameter(this, "{{entity_name}}UpdatedTopicArn", {
+      stringValue: {{entity_name}}UpdatedTopic.topicArn,
+      parameterName: "/{{entity_name}}-api/order-updated"
     });
-    const orderDeletedTopicArnParameter = new StringParameter(this, "OrderDeletedTopicArn", {
-      stringValue: orderDeletedTopic.topicArn,
-      parameterName: "/order-api/order-deleted"
+    const orderDeletedTopicArnParameter = new StringParameter(this, "{{entity_name}}DeletedTopicArn", {
+      stringValue: {{entity_name}}DeletedTopic.topicArn,
+      parameterName: "/{{entity_name}}-api/order-deleted"
     });
 
     const apiEndpoint = new cdk.CfnOutput(this, "ApiUrlOutput", {

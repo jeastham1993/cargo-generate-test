@@ -1,0 +1,3 @@
+[placeholders]
+stack_name = { prompt = "Enter the name of the CloudFormation Stack you want to create", default = "API", type = "string" }
+entity_name = { prompt = "Enter the name of the main entity that this CRUD API will work with e.g. 'Orders' or 'Products'", type = "string" }

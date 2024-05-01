@@ -7,9 +7,9 @@ import { ITopic } from "aws-cdk-lib/aws-sns";
 
 export class FunctionProps{
     table: ITable
-    orderCreatedTopic: ITopic
-    orderUpdatedTopic: ITopic
-    orderDeletedTopic: ITopic
+    {{entity_name}}CreatedTopic: ITopic
+    {{entity_name}}UpdatedTopic: ITopic
+    {{entity_name}}DeletedTopic: ITopic
 }
 
 export class EventPublisherFunction extends Construct {
@@ -23,9 +23,9 @@ export class EventPublisherFunction extends Construct {
             architecture: Architecture.ARM_64,
             environment: {
               TABLE_NAME: props.table.tableName,
-              ORDER_CREATED_TOPIC: props.orderCreatedTopic.topicArn,
-              ORDER_UPDATED_TOPIC: props.orderUpdatedTopic.topicArn,
-              ORDER_DELETED_TOPIC: props.orderDeletedTopic.topicArn,
+              {{entity_name}}_CREATED_TOPIC: props.orderCreatedTopic.topicArn,
+              {{entity_name}}_UPDATED_TOPIC: props.orderUpdatedTopic.topicArn,
+              {{entity_name}}_DELETED_TOPIC: props.orderDeletedTopic.topicArn,
             },
           });
 
